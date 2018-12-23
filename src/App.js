@@ -15,8 +15,10 @@ class App extends Component {
             error => this.setState({errorMessage: error.message})
         );
 
-        setInterval(()=>{
-            this.setState({value: this.state.value + 1})
+        setInterval((state,props)=>{
+            this.setState((state,props)=> {
+            return {value: state.value+1}
+            })
         },1000); 
     }
 
