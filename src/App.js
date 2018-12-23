@@ -6,49 +6,68 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {location: null};
+        this.state = {location: null,errorMessage: ""};
 
         window.navigator.geolocation.getCurrentPosition(
             position => this.setState({latitude: position.coords.latitude}),
-            error => console.log(error)
+            error => this.setState({errorMessage: error.message})
         );
     }
 
     isWarm() {
         const {latitude}= this.state;
-        const date = new Date();
-        const month = date.getMonth();
-
+        console.log(`latitude ${latitude}`);
+      
         if(latitude){
+            const month = new Date().getMonth();
+
             if (month>=4 && month<=9 && latitude > 0){
-                console.log("it is above equator so hot here");
-            } else if (month<=3 && month>=10 && latitude<0){
-                console.log("it is below equator and it is winter here");
-            } else {
-                console.log("exactly at equator");
+                console.log("month>=4 && month<=9 && latitude > 0");
+                return true;
+                
+            } else if (month<=4 || month>=9 && latitude<0){
+                console.log("month<=4 || month>=9 && latitude<0");
+                return true;
+            } else if (latitude ===0){
+                console.log("latitude ===0");
+                return true; 
             }
-        } else {
-            console.log("latitude is not available")
-        }
+        } 
+                console.log("out of if statement");
+                return false;
 
         
 
     }
 
+    getClockIcon(){
+        if(this.isWarm()){
+            return "sun.svg";
+        }
+
+        return "snowflake.svg";
+    }
+
     render() {
 
-        this.isWarm();
+        const {latitude,errorMessage} = this.state;
+        //console.log("error is "+errorMessage);
 
-        const {latitude} = this.state;
+        console.log('Render:', latitude, errorMessage);
     
         return (
             <div>
-                <p>{latitude}</p>
-                <Clock 
-                    icon="sun.svg"
-                    timezone={"Sydney/Australia"} 
-                    date={new Date()} 
-                />
+                {/* <p>{latitude}</p> */}
+                {errorMessage || 
+
+                        <Clock 
+                        icon={latitude ? this.getClockIcon(): null}
+                        timezone={"Sydney/Australia"} 
+                        date={new Date()} 
+                        />
+                    
+                }
+
             </div>
         );
 
