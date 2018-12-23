@@ -4,14 +4,20 @@ import Clock from "./Clock";
 
 class App extends Component {
 
+    state = {location: null,errorMessage: "", value: 1};
+
     constructor(props) {
         super(props);
-        this.state = {location: null,errorMessage: ""};
+        
 
         window.navigator.geolocation.getCurrentPosition(
             position => this.setState({latitude: position.coords.latitude}),
             error => this.setState({errorMessage: error.message})
         );
+
+        setInterval(()=>{
+            this.setState({value: this.state.value + 1})
+        },1000); 
     }
 
     isWarm() {
@@ -50,13 +56,11 @@ class App extends Component {
 
     render() {
 
-        const {latitude,errorMessage} = this.state;
-        //console.log("error is "+errorMessage);
-
-        console.log('Render:', latitude, errorMessage);
-    
+        const {latitude,errorMessage,value} = this.state;
+                 
         return (
             <div>
+                {value}
                 {/* <p>{latitude}</p> */}
                 {errorMessage || 
 
